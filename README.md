@@ -15,6 +15,10 @@ Aplicativo de console que gera caça-palavras de dimensões e quantidades de pal
 * **Código limpo**: nomeação cuidadosa de variáveis, métodos, e uso de espaçamento bem pensado para tornar o código limpo, legível e compreensível;
 * **Leitura de arquivos**: para ler os dados que formam o vocabulário do caça-palavras.
 
+## Exemplos
+
+
+
 ## Diagrama de Classes
 
 A estrutura, estado e comportamento das classes aplicadas na resolução de problemas, junto dos respectivos acoplamentos se encontra no diagrama de classes abaixo:
