@@ -5,7 +5,7 @@ Aplicativo de console que gera caça-palavras de dimensões e quantidades de pal
 
 ## Conceitos aplicados:
 
-* **Classes**: para implementar a representação de letras, palavras, e do próprio caça-palavras.
+* <u>Classes</u>: para implementar a representação de letras, palavras, e do próprio caça-palavras.
 * **Enumerações**: para enumerar as orientação e direções possíveis para uma palavra.
 * **Estruturas de dados**: arrays para representar a tabela de caracteres, e listas para o acoplamento de composição entre as classes.
 * **Encapsulamento**: para isolar o comportamento e estado internos e externos.
