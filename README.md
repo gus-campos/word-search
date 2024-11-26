@@ -1,7 +1,7 @@
 
 # WordSearch
 
-Aplicativo de console que gera caça-palavras de dimensões e quantidades de palavras arbitrárias. As palavras pode ser horizontais, verticais ou diagonais, em ordem direta ou inversa. Para gerar caça-palavras diferentes, usa posicionamento e escolha de palavras aleatórias.
+Aplicativo de console em C# que gera caça-palavras de dimensões e quantidades de palavras arbitrárias, usando orientação a objetos. As palavras podem ser horizontais, verticais ou diagonais, em ordem direta ou inversa. Para gerar caça-palavras diferentes, usa aleatoriedade, e usando tratamento de exceções avisa ao usuário quando não é possível gerar um caça-palavras nos parâmetros informados pelo usuário.
 
 ## Conceitos aplicados
 
