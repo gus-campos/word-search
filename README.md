@@ -3,7 +3,7 @@
 
 Aplicativo de console que gera caça-palavras de dimensões e quantidades de palavras arbitrárias. As palavras pode ser horizontais, verticais ou diagonais, em ordem direta ou inversa. Para gerar caça-palavras diferentes, usa posicionamento e escolha de palavras aleatórias.
 
-## Conceitos aplicados:
+## Conceitos aplicados
 
 * **Classes**: para implementar a representação de letras, palavras, e do próprio caça-palavras;
 * **Enumerações**: para enumerar as orientação e direções possíveis para uma palavra;
