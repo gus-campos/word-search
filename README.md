@@ -12,6 +12,7 @@ Aplicativo de console que gera caça-palavras de dimensões e quantidades de pal
 * **Tratamento de Exceções**: para lidar com a exceção em tempo de execução, para quando a criação do caça-palavras falha por uma densidade de palavras muito alta, e se comunicar com o usuário sobre.
 * **Tipagem estática** e **estruturas de controle** ao longo de todo o programa.
 * Nomeação cuidadosa de variáveis, métodos, e uso de espaçamento bem pensado para tornar o **código limpo**, legível e compreensível.
+* **Leitura de arquivos**: para ler os dados que formam o vocabulário do caça-palavras.
 
 ## Diagrama de Classes
 
