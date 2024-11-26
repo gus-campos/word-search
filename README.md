@@ -17,7 +17,9 @@ Aplicativo de console que gera caça-palavras de dimensões e quantidades de pal
 
 ## Exemplos
 
+![](assets/1.png)
 
+![](assets/2.png)
 
 ## Diagrama de Classes
 
