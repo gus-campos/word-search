@@ -5,13 +5,13 @@ Aplicativo de console que gera caça-palavras de dimensões e quantidades de pal
 
 ## Conceitos aplicados:
 
-* Classes: para implementar a representação de letras, palavras, e do próprio caça-palavras.
-* Enumerações: para enumerar as orientação e direções possíveis para uma palavra.
-* Estruturas de dados: arrays para representar a tabela de caracteres, e listas para o acoplamento de composição entre as classes.
-* Encapsulamento: para isolar o comportamento e estado internos e externos.
-* Tratamento de Exceções: para lidar com a exceção em tempo de execução, para quando a criação do caça-palavras falha por uma densidade de palavras muito alta, e se comunicar com o usuário sobre.
-* Tipagem estática e estruturas de controle ao longo de todo o programa.
-* Nomeação cuidadosa de variáveis, métodos, e uso de espaçamento bem pensado para tornar o código organizado, legível e compreensível.
+* **Classes**: para implementar a representação de letras, palavras, e do próprio caça-palavras.
+* **Enumerações**: para enumerar as orientação e direções possíveis para uma palavra.
+* **Estruturas de dados**: arrays para representar a tabela de caracteres, e listas para o acoplamento de composição entre as classes.
+* **Encapsulamento**: para isolar o comportamento e estado internos e externos.
+* **Tratamento de Exceções**: para lidar com a exceção em tempo de execução, para quando a criação do caça-palavras falha por uma densidade de palavras muito alta, e se comunicar com o usuário sobre.
+* **Tipagem estática** e **estruturas de controle** ao longo de todo o programa.
+* Nomeação cuidadosa de variáveis, métodos, e uso de espaçamento bem pensado para tornar o **código limpo**, legível e compreensível.
 
 ## Diagrama de Classes
 
