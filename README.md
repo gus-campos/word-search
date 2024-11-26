@@ -1,3 +1,6 @@
+
+## Gráfico de Classes
+
 ```mermaid
 
 classDiagram
@@ -71,7 +74,7 @@ class WordSearch {
 }
 
 ```
-
+## Gráfico de Atividade
 
 ```mermaid
 sequenceDiagram
