@@ -17,13 +17,11 @@ Aplicativo de console que gera caça-palavras de dimensões e quantidades de pal
 
 ## Exemplos
 
+Abaixo seguem exemplos do resultado, demonstração e exemplo real. Nas imagens as palavras a serem procuradas foram omitidas para melhorar a exibição.
+
 | Demonstração       | Exemplo real      |
 | ------------------ | ----------------- |
 | ![](assets/1.png)  | ![](assets/2.png) |
-
-
-
-
 
 ## Diagrama de Classes
 
