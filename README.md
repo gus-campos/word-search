@@ -26,9 +26,9 @@ Word "1" *-- Orientation
 Word "n "*-- Letter
 
 WordSearch "n" *-- Word
-WordSearch "1" <-- IntDuple
+WordSearch "1" *-- IntDuple
 
-Letter "1" <-- IntDuple
+Letter "1" *-- IntDuple
 
 class IntDuple {
 	<<typedef>>
