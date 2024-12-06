@@ -33,14 +33,13 @@ classDiagram
 
 Word "1" *-- Direction
 Word "1" *-- Orientation
-Word "n "*-- Letter
+Word "n"*-- Letter
+Letter "1"*-- Word
 
 WordSearch "n" *-- Word
-WordSearch "1" *-- IntDuple
+WordSearch "1" *-- Coord
 
-Letter "1" *-- IntDuple
-
-class IntDuple {
+class Coord {
 	<<typedef>>
 	+int x
 	+int y
@@ -53,8 +52,6 @@ class Orientation {
 	INVERSE
 }
 
-  
-
 class Direction {
 
 	<<Enumeration>>
@@ -66,20 +63,21 @@ class Direction {
 class Letter {
 
 	-char character
-	-IntDuple position
-	
-	+char GetCharacter()
-	+IntDuple GetPosition()
+	-Coord position
 }
 
 class Word{
-
-	-string[] vocabulary$
+    
 	-List~Letter~ lettters
 	-Direction direction
 	-Orientation orientation
-	-IntDuple startPosition
 	-string text
+
+    -GetRandomWordText()
+    -GetWordMaxOffset()
+    -GetNextLetterOffset()
+    -GenStartPosition()
+    -CreateLetters()
 	
 	+bool CollidesWith(Word word)
 	+List~Letter~ GetLetters()
@@ -88,7 +86,7 @@ class Word{
 
 class WordSearch {
 
-	-IntDuple dimensions
+	-Coord dimensions
 	-List~Word~ words
 	-char[,] table
 	

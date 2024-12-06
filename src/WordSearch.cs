@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 class WordSearchGenerationException : Exception 
 {
@@ -13,98 +14,29 @@ class WordSearch {
 
     // Properties
 
-    private IntDuple dimensions;
+    private Coord dimensions;
     private List<Word> words = new List<Word>();
-    private char[,] table;
+    private Letter[,] table;
 
     // Constructor 
     
-    public WordSearch(IntDuple dimensions, int wordsAmount) {
+    public WordSearch(Coord dimensions, int wordsAmount) {
 
-        this.table = new char[dimensions.x, dimensions.y];
+        this.table = new Letter[dimensions.x, dimensions.y];
         this.dimensions = dimensions;
-
-        // Filling table with random letters
-        Random random = new Random();
 
         for (int i=0; i<dimensions.x; i++)
             for (int j=0; j<dimensions.y; j++)
-                this.table[i,j] = '.';//(char)random.Next('A', 'Z'+1);   
-
-        Orientation[] orientations = [Orientation.DIAGONAL, 
-                                      Orientation.VERTICAL, 
-                                      Orientation.HORIZONTAL];
-
-        Direction[] directions = [Direction.NORMAL,
-                                  Direction.REVERSE];
+                this.table[i,j] = new Letter(Util.GetRandomCharacter(), new Coord(i,j));
 
         // Creating and inserting words
         for (int i=0; i<wordsAmount; i++)
-        {
-            bool valid;
-            int tries = 0;
-
-            // For many times, try to pick a word and fit it inside the word search
-            do 
-            {
-                // If too many tries are made, throw and Exception
-                tries++;
-                if (tries > Constants.maxTriesAmount)
-                    throw new WordSearchGenerationException("WordSearch too hard to create");
-
-                Orientation orientation = orientations[random.Next(orientations.Length)];
-                Direction direction = directions[random.Next(directions.Length)];
-                Word word = new Word(orientation, direction, this.dimensions);
-
-                valid = !this.ValidWord(word);
-
-                if (valid) 
-                {
-                    this.words.Add(word);
-                    this.InsertWord(word);
-                }
-
-            } while (!valid);
-        }   
-    }
-
-    // Private methods
-
-    private void InsertWord(Word word) {
-
-        /* Inserts each letter of the word in the table */
-
-        List<Letter> letters = word.GetLetters();
-
-        foreach (Letter letter in letters)
-            this.table[letter.GetPosition().x, letter.GetPosition().y] = letter.GetCharacter();
-    }
-
-    private bool ValidWord(Word word) {
-
-        /* 
-        Verifies if a word is valid to be added to the WordSearch
-        It will be valid if:
-
-            * It doesn't collides with any word already inserted
-            * It doesnt't have the same word text as any word already inserted 
-        */
-
-        foreach (Word tableWord in this.words)
-        {
-            if (tableWord.GetText() == word.GetText())
-                return true; 
-
-            if (tableWord.CollidesWith(word))
-                return true;
-        }
-
-        return false;
+            this.GenWord();
     }
 
     // Public methods
 
-    public char[,] GetTable() {
+    public Letter[,] GetTable() {
 
         return this.table;
     }
@@ -115,11 +47,23 @@ class WordSearch {
 
         Console.WriteLine("\n\n============= Word Search =============\n\n");
 
+        // Imprimir índices das colunas
+        Console.Write("   ");
+        for (int j=0; j<dimensions.x; j++)
+            Console.Write($"{j:D2} ");
+        Console.WriteLine("\n");
+
         for (int i=0; i<dimensions.x; i++)
         {
+            // Imprimir índices das linhas
+            Console.Write($"{i:D2}  ");
+
             for (int j=0; j<dimensions.y; j++)
             {
-                Console.Write(this.table[i,j] + " ");
+                Letter letter = this.table[i,j];
+                bool found = letter.word != null && letter.word.GetFound();
+                
+                Console.Write(found ? "*  " : letter.character + "  ");
             }
 
             Console.WriteLine();
@@ -128,16 +72,43 @@ class WordSearch {
 
     public void PrintWords() {
 
-        Console.WriteLine("\n=> Words to be found:\n");
+        /*
+        Prints all words to be found
+        */
 
-        string[] wordsText = this.GetWordsText();
-        Array.Sort(wordsText);
+        Console.WriteLine("\n"); 
 
-        foreach (string wordText in wordsText)
-            Console.WriteLine(wordText);
+        // Getting not found words texts
+        List<string> foundWordsText = new();
+        List<string> notFoundWordsText = new();
+
+        foreach (Word word in this.words)
+            if (word.GetFound())
+                foundWordsText.Add(word.GetText());
+            else
+                notFoundWordsText.Add(word.GetText());
+
+                
+        foundWordsText.Sort();
+        notFoundWordsText.Sort();
+
+        // Printing
+
+        if (foundWordsText.Count() > 0) {
+            Console.WriteLine("Found:");
+            foreach (string wordText in foundWordsText)
+                Console.WriteLine("\t" + wordText);
+            Console.WriteLine("\n");
+        }
+
+        if (notFoundWordsText.Count() > 0) {
+            Console.WriteLine("To be found:");
+            foreach (string wordText in notFoundWordsText)
+                Console.WriteLine("\t" + wordText);
+        }
     }
 
-    // Public methods - Getters
+    // Getters
 
     public Word[] GetWords() {
 
@@ -151,17 +122,85 @@ class WordSearch {
         return words;
     }
 
-    public string[] GetWordsText() {
-        
-        /* Get the text of each word in the table */
-
-        string[] wordsText = new string[this.words.Count];
-        
-        for (int i=0; i<wordsText.Length; i++)
-            wordsText[i] = this.words[i].GetText();
-        
-        return wordsText;
+    public Word? GetWordAt(Coord coord) {
+        return this.GetTable()[coord.x, coord.y].word;
     }
 
-    
+    public bool Guess(Coord coord0, Coord coord1) {
+
+        Word? word = this.GetWordAt(coord0);
+
+        if (word == null)
+            return false;
+ 
+        // Ordem direta
+        if (word.GetLetters().First().coord == coord0 && word.GetLetters().Last().coord == coord1)
+            return true;
+
+        // Ordem inversa
+        if (word.GetLetters().Last().coord == coord0 && word.GetLetters().First().coord == coord1)
+            return true;
+
+        return false;
+    }
+
+    // Private methods
+
+    private void InsertWord(Word word) {
+
+        /* Inserts each letter of the word in the table */
+
+        List<Letter> letters = word.GetLetters();
+
+        foreach (Letter letter in letters)
+            this.table[letter.coord.x, letter.coord.y] = letter;
+
+        this.words.Add(word);
+    }
+
+    private bool ValidWordInsert(Word word) {
+
+        /* 
+        Verifies if a word is valid to be added to the WordSearch
+        It will be valid if:
+
+            * It doesn't collides with any word already inserted
+            * It doesnt't have the same word text as any word already inserted 
+        */
+
+        foreach (Word tableWord in this.words)
+        {
+            if (tableWord.GetText() == word.GetText())
+                return false; 
+
+            if (tableWord.CollidesWith(word))
+                return false;
+        }
+
+        return true;
+    }
+
+    private void GenWord() {
+
+        bool valid;
+        int tries = 0;
+
+        // For many times, try to pick a word and fit it inside the word search
+        do 
+        {
+            // If too many tries are made, throw an Exception
+            tries++;
+            if (tries > Constants.maxTriesAmount)
+                throw new WordSearchGenerationException("WordSearch too hard to create");
+
+            // Create word
+            Word word = Word.GenRandomWord(this.dimensions);
+
+            valid = this.ValidWordInsert(word);
+
+            if (valid) 
+                this.InsertWord(word);
+
+        } while (!valid);
+    }
 }
