@@ -59,7 +59,7 @@ class Direction {
 	DIAGONAL
 }
 
-class Letter {
+struct Letter {
 
 	-char character
 	-Coord position

@@ -77,7 +77,7 @@ class WordSearch {
         List<Letter> letters = word.GetLetters();
 
         foreach (Letter letter in letters)
-            this.table[letter.GetPosition().x, letter.GetPosition().y] = letter.GetCharacter();
+            this.table[letter.coord.x, letter.coord.y] = letter.character;
     }
 
     private bool ValidWord(Word word) {

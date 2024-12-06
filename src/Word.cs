@@ -4,12 +4,49 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+public record Coord(int x, int y);
+
+struct Letter {
+
+    /*
+    Represents a WordSearch table letter
+    */
+
+    // Properties
+
+    public char character { get; }
+    public Coord coord { get; }
+
+    // Constructor
+
+    public Letter(char character, Coord coord) {
+
+        this.character = character;
+        this.coord = coord;
+    }
+}
+
+enum Direction {
+    NORMAL,
+    REVERSE
+}
+
+enum Orientation {
+    HORIZONTAL,
+    VERTICAL,
+    DIAGONAL
+}
+
 class Word {
 
     /*
     Represents a WordSearch table word
     */
 
+    // Static properties
+
+    private static string[]? vocabulary = null;
+    
     // Properties
 
     private List<Letter> letters = new List<Letter>();
@@ -17,10 +54,6 @@ class Word {
     private Orientation orientation;
     private string text;    
 
-    // Static properties
-
-    private static string[]? vocabulary = null;
-    private static Random random = new();
 
     // Constructor
 
@@ -41,12 +74,12 @@ class Word {
     public bool CollidesWith(Word word) 
     {
         /* 
-        Verifies if the two words have any letter position in commom
+        Verifies if the two words have any letter coord in commom
         */
 
         foreach (Letter letter1 in this.letters)
             foreach (Letter letter2 in word.letters)
-                if (letter1.GetPosition() == letter2.GetPosition())
+                if (letter1.coord == letter2.coord)
                     return true;
 
         return false;
@@ -84,7 +117,7 @@ class Word {
         Get a random word text from vocabulary
         */
 
-        return Word.vocabulary![Word.random.Next(Word.vocabulary.Length)].ToUpper();
+        return Word.vocabulary![Util.GetRandom(Word.vocabulary.Length)].ToUpper();
     }
 
     private Coord GetWordMaxOffset() {
@@ -144,18 +177,18 @@ class Word {
     private Coord GenStartPosition(Coord dimensions, Coord wordMaxOffset) {
 
         /* 
-        Generates a random start position given the word search dimensions
-        and the greatest position the word can start
+        Generates a random start coord given the word search dimensions
+        and the greatest coord the word can start
         */
 
-        return new Coord(random.Next(dimensions.x - wordMaxOffset.x),
-                         random.Next(dimensions.y - wordMaxOffset.y));
+        return new Coord(Util.GetRandom(dimensions.x - wordMaxOffset.x),
+                         Util.GetRandom(dimensions.y - wordMaxOffset.y));
     }
 
     private void CreateLetters(Coord dimensions) {
 
         /*
-        Create each letter of the word with their position,
+        Create each letter of the word with their coord,
         considering it's direction, orientation and word search
         dimensions limitations
         */
@@ -167,7 +200,7 @@ class Word {
         // Reversing word text, if necessary
         string formatedText = this.text;
         if (this.direction == Direction.REVERSE)
-            formatedText = string.Join("", this.text.ToCharArray().Reverse());
+            formatedText = new string(this.text.Reverse().ToArray());
     
         // Creating each letter of the word
         for (int i=0; i<this.text.Length; i++)
@@ -175,7 +208,7 @@ class Word {
             Letter letter = new Letter(
                 
                 character: formatedText[i], 
-                position: new Coord(startPosition.x + i*nextLetterOffset.x, 
+                coord: new Coord(startPosition.x + i*nextLetterOffset.x, 
                                     startPosition.y + i*nextLetterOffset.y)                                        
             );
 

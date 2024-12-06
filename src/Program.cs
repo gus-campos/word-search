@@ -8,7 +8,7 @@ public static class Constants {
     public static string VocabularyPath = Path.Combine(AppContext.BaseDirectory, "../../../data/vocabulary.txt");
 }
 
-static class Input {
+public static class Input {
 
     public static int getIntInput(string message) {
 
@@ -28,6 +28,15 @@ static class Input {
         } while (!valid);
 
         return validatedInput;
+    }
+}
+
+public static class Util
+{
+    private static Random random = new Random();
+    public static int GetRandom(int max)
+    {
+        return random.Next(max);
     }
 }
 
