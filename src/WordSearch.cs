@@ -97,13 +97,19 @@ class WordSearch {
 
         // Printing
 
+        // Found
         if (foundWordsText.Count() > 0) {
             Console.WriteLine("Found:");
             foreach (string wordText in foundWordsText)
                 Console.WriteLine("\t" + wordText);
-            Console.WriteLine("\n");
         }
 
+        // Separator
+        if (foundWordsText.Count() > 0 && notFoundWordsText.Count() > 0) {
+            Console.WriteLine();
+        }
+
+        // Not found
         if (notFoundWordsText.Count() > 0) {
             Console.WriteLine("To be found:");
             foreach (string wordText in notFoundWordsText)
