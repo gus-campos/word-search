@@ -3,9 +3,9 @@
 
 Aplicativo de console em C# que gera caça-palavras de dimensões e quantidades de palavras arbitrárias, usando orientação a objetos. As palavras podem ser horizontais, verticais ou diagonais, em ordem direta ou inversa. Para gerar caça-palavras diferentes, usa aleatoriedade, e usando tratamento de exceções avisa ao usuário quando não é possível gerar um caça-palavras nos parâmetros informados pelo usuário.
 
-<u>Atualização</u>: Código foi refatorado para aumentar a abstração, tornando-o mais legível e estruturado.
+**Atualização**: Código foi refatorado para aumentar a abstração, tornando-o mais legível e estruturado.
 
-<u>Novo recurso</u>: Permite que o usuário tente marcar uma palavra no caça-palavras, inserindo a posição inicial e final. Se bem sucedido, a palavra passa a ficar marcada no caça-palavras, e a palavra passa a ficar listada como encontrada. Ao achar todas as palavras, a vitória é anunciada e o jogo encerrado, como pode ser visto numa simples demonstração abaixo.
+**Novo recurso**: Permite que o usuário tente marcar uma palavra no caça-palavras, inserindo a posição inicial e final. Se bem sucedido, a palavra passa a ficar marcada no caça-palavras, e a palavra passa a ficar listada como encontrada. Ao achar todas as palavras, a vitória é anunciada e o jogo encerrado, como pode ser visto numa simples demonstração abaixo.
 
 | Marcando palavra   | Palavra marcada e vitória |
 | ------------------ | ----------------- |
