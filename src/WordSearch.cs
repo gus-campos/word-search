@@ -26,42 +26,14 @@ class WordSearch {
 
         for (int i=0; i<dimensions.x; i++)
             for (int j=0; j<dimensions.y; j++)
-                this.table[i,j] = new Letter((char)Util.GetRandom('A', 'Z'+1), new Coord(i,j));  
-
-        Orientation[] orientations = [Orientation.DIAGONAL, 
-                                      Orientation.VERTICAL, 
-                                      Orientation.HORIZONTAL];
-
-        Direction[] directions = [Direction.NORMAL,
-                                  Direction.REVERSE];
+                this.table[i,j] = new Letter((char)Util.GetRandom('A', 'Z'+1), new Coord(i,j));
 
         // Creating and inserting words
         for (int i=0; i<wordsAmount; i++)
         {
-            bool valid;
-            int tries = 0;
-
-            // For many times, try to pick a word and fit it inside the word search
-            do 
-            {
-                // If too many tries are made, throw and Exception
-                tries++;
-                if (tries > Constants.maxTriesAmount)
-                    throw new WordSearchGenerationException("WordSearch too hard to create");
-
-                Orientation orientation = orientations[Util.GetRandom(orientations.Length)];
-                Direction direction = directions[Util.GetRandom(directions.Length)];
-                Word word = new Word(orientation, direction, this.dimensions);
-
-                valid = !this.ValidWord(word);
-
-                if (valid) 
-                {
-                    this.words.Add(word);
-                    this.InsertWord(word);
-                }
-
-            } while (!valid);
+            
+            
+            this.TryToGenWord();
         }   
     }
 
@@ -90,6 +62,10 @@ class WordSearch {
     }
 
     public void PrintWords() {
+
+        /*
+        Prints all words to be found
+        */
 
         Console.WriteLine("\n=> Words to be found:\n");
 
@@ -136,9 +112,11 @@ class WordSearch {
 
         foreach (Letter letter in letters)
             this.table[letter.coord.x, letter.coord.y] = letter;
+
+        this.words.Add(word);
     }
 
-    private bool ValidWord(Word word) {
+    private bool ValidWordInsert(Word word) {
 
         /* 
         Verifies if a word is valid to be added to the WordSearch
@@ -151,12 +129,36 @@ class WordSearch {
         foreach (Word tableWord in this.words)
         {
             if (tableWord.GetText() == word.GetText())
-                return true; 
+                return false; 
 
             if (tableWord.CollidesWith(word))
-                return true;
+                return false;
         }
 
-        return false;
+        return true;
+    }
+
+    private void TryToGenWord() {
+
+        bool valid;
+        int tries = 0;
+
+        // For many times, try to pick a word and fit it inside the word search
+        do 
+        {
+            // If too many tries are made, throw an Exception
+            tries++;
+            if (tries > Constants.maxTriesAmount)
+                throw new WordSearchGenerationException("WordSearch too hard to create");
+
+            // Create word
+            Word word = Word.GenRandomWord(this.dimensions);
+
+            valid = this.ValidWordInsert(word);
+
+            if (valid) 
+                this.InsertWord(word);
+
+        } while (!valid);
     }
 }

@@ -53,15 +53,18 @@ class Word {
     private Orientation orientation;
     private string text = "";    
 
+    // Static
+    private static Orientation[] orientations = [Orientation.DIAGONAL, Orientation.VERTICAL, Orientation.HORIZONTAL];
+    private static Direction[] directions = [Direction.NORMAL, Direction.REVERSE];
 
     // Constructor
 
-    public Word(Orientation orientation, Direction direction, Coord dimensions) {
+    public Word(Orientation orientation, Direction direction, string wordText, Coord dimensions) {
 
         this.orientation = orientation;
         this.direction = direction;
+        this.text = wordText;
 
-        this.text = this.GetRandomWordText();
         this.CreateLetters(dimensions);
     }
 
@@ -91,9 +94,35 @@ class Word {
         return this.text;
     }
 
+    // Public methods - static
+
+    public static Orientation GenRandomOrientation() {
+        
+        int randomIndex = Util.GetRandom(Word.orientations.Length);
+        return Word.orientations[randomIndex];
+    }
+
+    public static Direction GenRandomDirection() {
+        int randomIndex = Util.GetRandom(Word.directions.Length);
+        return Word.directions[randomIndex];
+    }
+
+    public static Word GenRandomWord(Coord dimensions) {
+
+        /*
+        Creates a random word for given dimensions of a word search
+        */
+
+        Orientation orientation = Word.GenRandomOrientation();
+        Direction direction = Word.GenRandomDirection();
+        string wordText = Word.GetRandomWordText();
+
+        return new Word(orientation, direction, wordText, dimensions);
+    }
+
     // Private methods
 
-    private string GetRandomWordText() {
+    private static string GetRandomWordText() {
 
         /*
         Get a random word text from vocabulary

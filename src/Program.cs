@@ -66,17 +66,18 @@ class Program
     {
         // Getting input
 
-        int wordsAmount;
-        int rows, columns;
-        Coord dimensions;
+        int wordsAmount = Input.getIntInput("Insert a valid words amount: ");
+        int rows = Input.getIntInput("Insert a valid rows amount: ");
+        int columns = Input.getIntInput("Insert a valid columns amount: ");;
         
-        wordsAmount = Input.getIntInput("Insert a valid words amount: ");
-        columns = Input.getIntInput("Insert a valid columns amount: ");
-        rows = Input.getIntInput("Insert a valid rows amount: ");
+        Coord dimensions = new Coord(rows, columns);
+        WordSearch wordSearch = TryToGenWordSearch(dimensions, wordsAmount);
 
-        dimensions = new Coord(rows, columns);
+        wordSearch.PrintTable();
+        wordSearch.PrintWords();
+    }
 
-        // Creating word search
+    private static WordSearch TryToGenWordSearch(Coord dimensions, int wordsAmount) {
 
         WordSearch? wordSearch = null;
 
@@ -88,8 +89,7 @@ class Program
         {
             try
             {
-                wordSearch = new WordSearch(dimensions: dimensions, 
-                                            wordsAmount: wordsAmount);
+                wordSearch = new WordSearch(dimensions, wordsAmount);
                 valid = true;
             }
             catch (WordSearchGenerationException)
@@ -105,11 +105,6 @@ class Program
 
         } while (!valid);
 
-        // Print word search page and words
-        if (wordSearch != null)
-        {
-            wordSearch.PrintTable();
-            wordSearch.PrintWords();
-        }
+        return wordSearch!;
     }
 }
