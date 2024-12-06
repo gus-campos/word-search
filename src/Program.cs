@@ -111,6 +111,15 @@ class Program
 
         wordSearch.PrintTable();
         wordSearch.PrintWords();
+
+        while (true) {
+            Console.WriteLine("\n");
+            Coord begin = Input.GetCoordInput("Insert begin: ");
+            Coord end = Input.GetCoordInput("Insert end: ");
+            
+            if (wordSearch.checkGuess(begin, end))
+                Console.WriteLine(wordSearch.GetWordAt(begin)!.GetText());
+        }
     }
 
     private static WordSearch? TryGenWordSearch(Coord dimensions, int wordsAmount) {

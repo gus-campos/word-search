@@ -1,6 +1,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 class WordSearchGenerationException : Exception 
 {
@@ -46,11 +48,20 @@ class WordSearch {
 
         Console.WriteLine("\n\n============= Word Search =============\n\n");
 
+        // Imprimir índices das colunas
+        Console.Write("   ");
+        for (int j=0; j<dimensions.x; j++)
+            Console.Write($"{j:D2} ");
+        Console.WriteLine("\n");
+
         for (int i=0; i<dimensions.x; i++)
         {
+            // Imprimir índices das linhas
+            Console.Write($"{i:D2}  ");
+
             for (int j=0; j<dimensions.y; j++)
             {
-                Console.Write(this.table[i,j].character + " ");
+                Console.Write(this.table[i,j].character + "  ");
             }
 
             Console.WriteLine();
@@ -96,6 +107,28 @@ class WordSearch {
             wordsText[i] = this.words[i].GetText();
         
         return wordsText;
+    }
+
+    public Word? GetWordAt(Coord coord) {
+        return this.GetTable()[coord.x, coord.y].word;
+    }
+
+    public bool checkGuess(Coord coord0, Coord coord1) {
+
+        Word? word = this.GetWordAt(coord0);
+
+        if (word == null)
+            return false;
+ 
+        // Ordem direta
+        if (word.GetLetters().First().coord == coord0 && word.GetLetters().Last().coord == coord1)
+            return true;
+
+        // Ordem inversa
+        if (word.GetLetters().First().coord == coord0 && word.GetLetters().Last().coord == coord1)
+            return true;
+
+        return false;
     }
 
     // Private methods
