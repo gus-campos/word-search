@@ -1,6 +1,6 @@
 // Defining types to be used
 
-public record IntDuple(int x, int y);
+public record Coord(int x, int y);
 
 // Enums
 

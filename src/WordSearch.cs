@@ -13,13 +13,13 @@ class WordSearch {
 
     // Properties
 
-    private IntDuple dimensions;
+    private Coord dimensions;
     private List<Word> words = new List<Word>();
     private char[,] table;
 
     // Constructor 
     
-    public WordSearch(IntDuple dimensions, int wordsAmount) {
+    public WordSearch(Coord dimensions, int wordsAmount) {
 
         this.table = new char[dimensions.x, dimensions.y];
         this.dimensions = dimensions;
@@ -29,7 +29,7 @@ class WordSearch {
 
         for (int i=0; i<dimensions.x; i++)
             for (int j=0; j<dimensions.y; j++)
-                this.table[i,j] = '.';//(char)random.Next('A', 'Z'+1);   
+                this.table[i,j] = (char)random.Next('A', 'Z'+1);   
 
         Orientation[] orientations = [Orientation.DIAGONAL, 
                                       Orientation.VERTICAL, 

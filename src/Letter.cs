@@ -8,11 +8,11 @@ class Letter {
     // Properties
 
     private char character;
-    private IntDuple position;
+    private Coord position;
 
     // Constructor
 
-    public Letter(char character, IntDuple position) {
+    public Letter(char character, Coord position) {
 
         this.character = character;
         this.position = position;
@@ -24,7 +24,7 @@ class Letter {
         return this.character;
     }
 
-    public IntDuple GetPosition() {
+    public Coord GetPosition() {
         return this.position;
     }
 }

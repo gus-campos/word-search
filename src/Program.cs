@@ -39,13 +39,13 @@ class Program
 
         int wordsAmount;
         int rows, columns;
-        IntDuple dimensions;
+        Coord dimensions;
         
         wordsAmount = Input.getIntInput("Insert a valid words amount: ");
         columns = Input.getIntInput("Insert a valid columns amount: ");
         rows = Input.getIntInput("Insert a valid rows amount: ");
 
-        dimensions = new IntDuple(rows, columns);
+        dimensions = new Coord(rows, columns);
 
         // Creating word search
 

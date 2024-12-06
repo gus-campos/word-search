@@ -194,3 +194,4 @@
 /home/gfcampos/PROJETOS/C#/WordSearch/obj/Debug/net8.0/WordSearch.pdb
 /home/gfcampos/PROJETOS/C#/WordSearch/obj/Debug/net8.0/WordSearch.genruntimeconfig.cache
 /home/gfcampos/PROJETOS/C#/WordSearch/obj/Debug/net8.0/ref/WordSearch.dll
+/home/gfcampos/PROJETOS/C#/WordSearch/obj/Debug/net8.0/WordSearch.sourcelink.json

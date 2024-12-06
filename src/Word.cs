@@ -13,77 +13,129 @@ class Word {
     // Properties
 
     private List<Letter> letters = new List<Letter>();
-    private IntDuple startPosition;
-    private string text;
     private Direction direction;
     private Orientation orientation;
+    private string text;    
 
     // Static properties
 
-    private static string[] vocabulary = [];
+    private static string[]? vocabulary = null;
+    private static Random random = new();
 
     // Constructor
 
-    public Word(Orientation orientation, Direction direction, IntDuple dimensions) {
+    public Word(Orientation orientation, Direction direction, Coord dimensions) {
 
-        // Load vocabulary, if not loaded yet
-        if (vocabulary.Length == 0) 
-        {
-            Word.vocabulary = File.ReadAllText(Constants.VocabularyPath).Split("\n");
-            if (Word.vocabulary.Length == 0)
-                throw new IOException("No words found in the vocabulary data file.");
-        }
+        if (vocabulary == null) 
+            Word.vocabulary = this.LoadVocabulary();
 
         this.orientation = orientation;
         this.direction = direction;
 
-        Random random = new Random();
+        this.text = this.GetRandomWordText();
+        this.CreateLetters(dimensions);
+    }
 
-        // Choosing random word from the vocabulary
-        this.text = Word.vocabulary[random.Next(Word.vocabulary.Length)].ToUpper();
+    private Coord GenStartPosition(Coord dimensions, Coord wordMaxOffset) {
 
-        // Creating Letter instances, and their positions
-        IntDuple offset = new(0,0);
-        IntDuple increment = new(0,0);
+        /* 
+        Generates a random start position given the word search dimensions
+        */
+
+        return new Coord(random.Next(dimensions.x - wordMaxOffset.x),
+                            random.Next(dimensions.y - wordMaxOffset.y));
+    }
+
+    private Coord GetWordMaxOffset() {
+
+        Coord wordMaxOffset = new(0,0);
 
         switch (this.orientation) {
 
             case Orientation.HORIZONTAL:
-                offset = new IntDuple(0, text.Length); 
-                increment = new IntDuple(0, 1);
+                wordMaxOffset = new Coord(0, text.Length); 
                 break;
 
             case Orientation.VERTICAL:
-                offset = new IntDuple(text.Length, 0);
-                increment = new IntDuple(1, 0);
+                wordMaxOffset = new Coord(text.Length, 0);
                 break;
 
             case Orientation.DIAGONAL:
-                offset = new IntDuple(text.Length, text.Length);
-                increment = new IntDuple(1, 1);
+                wordMaxOffset = new Coord(text.Length, text.Length);
                 break;
         }
 
-        startPosition = new IntDuple(random.Next(dimensions.x - offset.x),
-                                     random.Next(dimensions.y - offset.y));
+        return wordMaxOffset;
+    }
+
+    private Coord GetNextLetterOffset() {
+
+        Coord nextLetterOffset = new(0,0);
+
+        switch (this.orientation) {
+
+            case Orientation.HORIZONTAL:
+                nextLetterOffset = new Coord(0, 1);
+                break;
+
+            case Orientation.VERTICAL:
+                nextLetterOffset = new Coord(1, 0);
+                break;
+
+            case Orientation.DIAGONAL:
+                nextLetterOffset = new Coord(1, 1);
+                break;
+        }
+
+        return nextLetterOffset;
+    }
+
+    private void CreateLetters(Coord dimensions) {
+
+        /*
+        Create each letter of the word with their position,
+        considering it's direction, orientation and word search
+        dimensions limitations
+
+        "wordMaxOffset" variable name is obscure
+        */
+
+        Coord wordMaxOffset = this.GetWordMaxOffset();
+        Coord nextLetterOffset = this.GetNextLetterOffset();
+        Coord startPosition = this.GenStartPosition(dimensions, wordMaxOffset);        
 
         // Reversing word text, if necessary
-        string insertedText = this.text;
+        string formatedText = this.text;
         if (this.direction == Direction.REVERSE)
-            insertedText = string.Join("", this.text.ToCharArray().Reverse());
+            formatedText = string.Join("", this.text.ToCharArray().Reverse());
     
         // Creating each letter of the word
         for (int i=0; i<this.text.Length; i++)
         {
             Letter letter = new Letter(
                 
-                insertedText[i], 
-                new IntDuple(startPosition.x + i*increment.x, 
-                             startPosition.y + i*increment.y)                                        
+                character: formatedText[i], 
+                position: new Coord(startPosition.x + i*nextLetterOffset.x, 
+                                    startPosition.y + i*nextLetterOffset.y)                                        
             );
 
-            letters.Add(letter);
+            this.letters.Add(letter);
         }
+    }
+
+    private string GetRandomWordText() {
+
+        return Word.vocabulary![Word.random.Next(Word.vocabulary.Length)].ToUpper();
+    }
+
+    private string[] LoadVocabulary() {
+
+        string[] vocabulary = File.ReadAllText(Constants.VocabularyPath).Split("\n");
+
+        if (vocabulary.Length == 0)
+                throw new IOException("No words found in the vocabulary data file.");
+
+        return vocabulary;
     }
 
     // Public methods

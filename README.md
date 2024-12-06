@@ -32,11 +32,11 @@ Word "1" *-- Orientation
 Word "n "*-- Letter
 
 WordSearch "n" *-- Word
-WordSearch "1" *-- IntDuple
+WordSearch "1" *-- Coord
 
-Letter "1" *-- IntDuple
+Letter "1" *-- Coord
 
-class IntDuple {
+class Coord {
 	<<typedef>>
 	+int x
 	+int y
@@ -62,10 +62,10 @@ class Direction {
 class Letter {
 
 	-char character
-	-IntDuple position
+	-Coord position
 	
 	+char GetCharacter()
-	+IntDuple GetPosition()
+	+Coord GetPosition()
 }
 
 class Word{
@@ -74,7 +74,7 @@ class Word{
 	-List~Letter~ lettters
 	-Direction direction
 	-Orientation orientation
-	-IntDuple startPosition
+	-Coord startPosition
 	-string text
 	
 	+bool CollidesWith(Word word)
@@ -84,7 +84,7 @@ class Word{
 
 class WordSearch {
 
-	-IntDuple dimensions
+	-Coord dimensions
 	-List~Word~ words
 	-char[,] table
 	
