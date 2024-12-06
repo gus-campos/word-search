@@ -109,16 +109,18 @@ class Program
             return;
         }
 
-        wordSearch.PrintTable();
-        wordSearch.PrintWords();
-
         while (true) {
+
+            wordSearch.PrintTable();
+            wordSearch.PrintWords();
+
             Console.WriteLine("\n");
+
             Coord begin = Input.GetCoordInput("Insert begin: ");
             Coord end = Input.GetCoordInput("Insert end: ");
             
-            if (wordSearch.checkGuess(begin, end))
-                Console.WriteLine(wordSearch.GetWordAt(begin)!.GetText());
+            if (wordSearch.Guess(begin, end))
+                wordSearch.GetWordAt(begin)!.markAsFound();
         }
     }
 
@@ -126,11 +128,10 @@ class Program
 
         WordSearch? wordSearch = null;
 
-        bool valid = false;
         int tries = 0;
 
         // Try for many times to create a word search with the given parameters
-        while (!valid) 
+        while (tries <= Constants.maxTriesAmount) 
         {
             try
             {
@@ -140,8 +141,7 @@ class Program
 
             catch (WordSearchGenerationException)
             {   
-                if (++tries > Constants.maxTriesAmount)
-                    break;
+                tries++;
             }
         }
 

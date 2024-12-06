@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 class WordSearchGenerationException : Exception 
@@ -28,7 +27,7 @@ class WordSearch {
 
         for (int i=0; i<dimensions.x; i++)
             for (int j=0; j<dimensions.y; j++)
-                this.table[i,j] = new Letter(Util.GetRandomCharacter(true), new Coord(i,j));
+                this.table[i,j] = new Letter(Util.GetRandomCharacter(), new Coord(i,j));
 
         // Creating and inserting words
         for (int i=0; i<wordsAmount; i++)
@@ -61,7 +60,10 @@ class WordSearch {
 
             for (int j=0; j<dimensions.y; j++)
             {
-                Console.Write(this.table[i,j].character + "  ");
+                Letter letter = this.table[i,j];
+                bool found = letter.word != null && letter.word.GetFound();
+                
+                Console.Write(found ? "*  " : letter.character + "  ");
             }
 
             Console.WriteLine();
@@ -74,13 +76,36 @@ class WordSearch {
         Prints all words to be found
         */
 
-        Console.WriteLine("\n=> Words to be found:\n");
+        Console.WriteLine("\n"); 
 
-        string[] wordsText = this.GetWordsText();
-        Array.Sort(wordsText);
+        // Getting not found words texts
+        List<string> foundWordsText = new();
+        List<string> notFoundWordsText = new();
 
-        foreach (string wordText in wordsText)
-            Console.WriteLine(wordText);
+        foreach (Word word in this.words)
+            if (word.GetFound())
+                foundWordsText.Add(word.GetText());
+            else
+                notFoundWordsText.Add(word.GetText());
+
+                
+        foundWordsText.Sort();
+        notFoundWordsText.Sort();
+
+        // Printing
+
+        if (foundWordsText.Count() > 0) {
+            Console.WriteLine("Found:");
+            foreach (string wordText in foundWordsText)
+                Console.WriteLine("\t" + wordText);
+            Console.WriteLine("\n");
+        }
+
+        if (notFoundWordsText.Count() > 0) {
+            Console.WriteLine("To be found:");
+            foreach (string wordText in notFoundWordsText)
+                Console.WriteLine("\t" + wordText);
+        }
     }
 
     // Getters
@@ -97,23 +122,11 @@ class WordSearch {
         return words;
     }
 
-    public string[] GetWordsText() {
-        
-        /* Get the text of each word in the table */
-
-        string[] wordsText = new string[this.words.Count];
-        
-        for (int i=0; i<wordsText.Length; i++)
-            wordsText[i] = this.words[i].GetText();
-        
-        return wordsText;
-    }
-
     public Word? GetWordAt(Coord coord) {
         return this.GetTable()[coord.x, coord.y].word;
     }
 
-    public bool checkGuess(Coord coord0, Coord coord1) {
+    public bool Guess(Coord coord0, Coord coord1) {
 
         Word? word = this.GetWordAt(coord0);
 
@@ -125,7 +138,7 @@ class WordSearch {
             return true;
 
         // Ordem inversa
-        if (word.GetLetters().First().coord == coord0 && word.GetLetters().Last().coord == coord1)
+        if (word.GetLetters().Last().coord == coord0 && word.GetLetters().First().coord == coord1)
             return true;
 
         return false;

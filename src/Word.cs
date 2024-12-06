@@ -51,7 +51,8 @@ class Word {
     private List<Letter> letters = new List<Letter>();
     private Direction direction;
     private Orientation orientation;
-    private string text = "";    
+    private string text = "";
+    private bool found = false;
 
     // Static
     private static Orientation[] orientations = [Orientation.DIAGONAL, Orientation.VERTICAL, Orientation.HORIZONTAL];
@@ -119,6 +120,14 @@ class Word {
         string wordText = Word.GetRandomWordText();
 
         return new Word(orientation, direction, wordText, dimensions);
+    }
+
+    public void markAsFound() {
+        this.found = true;
+    }
+
+    public bool GetFound() {
+        return this.found;
     }
 
     // Private methods
