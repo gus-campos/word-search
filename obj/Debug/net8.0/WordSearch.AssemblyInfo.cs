@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WordSearch")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f9448f3ce8b2841a83cd4659a20f3451a39df8ec")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5fec6f5bc79adcd929c795c24946672b675ff191")]
 [assembly: System.Reflection.AssemblyProductAttribute("WordSearch")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WordSearch")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

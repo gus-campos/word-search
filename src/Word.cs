@@ -103,6 +103,7 @@ class Word {
     }
 
     public static Direction GenRandomDirection() {
+        
         int randomIndex = Util.GetRandom(Word.directions.Length);
         return Word.directions[randomIndex];
     }

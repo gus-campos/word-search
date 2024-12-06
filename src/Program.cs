@@ -7,6 +7,7 @@ public static class Constants {
     public static int maxTriesAmount = 10;
     public static string VocabularyPath = Path.Combine(AppContext.BaseDirectory, "../../../data/vocabulary.txt");
     public static string[] vocabulary = Constants.LoadVocabulary();
+    public static string failMessage  = "Too many words for given dimensions. Reduce the number of words, or increase the word search dimensions.";
 
     private static string[] LoadVocabulary() {
 
@@ -25,10 +26,10 @@ public static class Constants {
 
 public static class Input {
 
-    public static int getIntInput(string message) {
+    public static int GetIntInput(string message) {
 
         /*
-        Asks for the same input multiple times, until its valid
+        Asks for the same int input multiple times, until its valid
         */
 
         bool valid;
@@ -44,6 +45,29 @@ public static class Input {
 
         return validatedInput;
     }
+
+    public static Coord GetCoordInput(string message) {
+
+        /*
+        Asks for the same Coord input multiple times, until its valid
+        */
+
+        bool valid;
+        int x, y;
+            
+        do
+        {
+            Console.Write(message);
+            string[] rawInput = (Console.ReadLine() ?? "").Split(" ");
+
+            bool validX = int.TryParse(rawInput[0], out x);
+            bool validY = int.TryParse(rawInput[1], out y);
+            valid = validX && validY; 
+
+        } while (!valid);
+
+        return new Coord(x, y);
+    }
 }
 
 public static class Util
@@ -58,6 +82,14 @@ public static class Util
     {
         return Util.random.Next(min, max);
     }
+
+    public static char GetRandomCharacter(bool overwrite=false) {
+        
+        if (overwrite)
+            return '.';
+        else 
+            return (char) Util.GetRandom('A', 'Z'+1);
+    }
 }
 
 class Program 
@@ -66,18 +98,22 @@ class Program
     {
         // Getting input
 
-        int wordsAmount = Input.getIntInput("Insert a valid words amount: ");
-        int rows = Input.getIntInput("Insert a valid rows amount: ");
-        int columns = Input.getIntInput("Insert a valid columns amount: ");;
-        
-        Coord dimensions = new Coord(rows, columns);
-        WordSearch wordSearch = TryToGenWordSearch(dimensions, wordsAmount);
+        Coord dimensions = Input.GetCoordInput("Insert a dimension: ");
+        int wordsAmount = Input.GetIntInput("Insert a valid words amount: ");
+
+        WordSearch? wordSearch = TryGenWordSearch(dimensions, wordsAmount);
+
+        if (wordSearch == null) {
+
+            Console.WriteLine(Constants.failMessage);
+            return;
+        }
 
         wordSearch.PrintTable();
         wordSearch.PrintWords();
     }
 
-    private static WordSearch TryToGenWordSearch(Coord dimensions, int wordsAmount) {
+    private static WordSearch? TryGenWordSearch(Coord dimensions, int wordsAmount) {
 
         WordSearch? wordSearch = null;
 
@@ -85,25 +121,20 @@ class Program
         int tries = 0;
 
         // Try for many times to create a word search with the given parameters
-        do 
+        while (!valid) 
         {
             try
             {
                 wordSearch = new WordSearch(dimensions, wordsAmount);
-                valid = true;
-            }
-            catch (WordSearchGenerationException)
-            {
-                tries++;
-                if (tries > Constants.maxTriesAmount)
-                {
-                    string errorMessage = "Too many words for given dimensions. Reduce the number of words, or increase it's dimensions.";
-                    Console.WriteLine(errorMessage);
-                    break;
-                }
+                break;
             }
 
-        } while (!valid);
+            catch (WordSearchGenerationException)
+            {   
+                if (++tries > Constants.maxTriesAmount)
+                    break;
+            }
+        }
 
         return wordSearch!;
     }

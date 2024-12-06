@@ -26,15 +26,11 @@ class WordSearch {
 
         for (int i=0; i<dimensions.x; i++)
             for (int j=0; j<dimensions.y; j++)
-                this.table[i,j] = new Letter((char)Util.GetRandom('A', 'Z'+1), new Coord(i,j));
+                this.table[i,j] = new Letter(Util.GetRandomCharacter(true), new Coord(i,j));
 
         // Creating and inserting words
         for (int i=0; i<wordsAmount; i++)
-        {
-            
-            
-            this.TryToGenWord();
-        }   
+            this.GenWord();
     }
 
     // Public methods
@@ -138,7 +134,7 @@ class WordSearch {
         return true;
     }
 
-    private void TryToGenWord() {
+    private void GenWord() {
 
         bool valid;
         int tries = 0;
