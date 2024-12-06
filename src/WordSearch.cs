@@ -43,7 +43,9 @@ class WordSearch {
 
     public void PrintTable() {
 
-        /* Prints the word search table, character per character */
+        /* 
+        Prints the word search table, character per character 
+        */
 
         Console.WriteLine("\n\n============= Word Search =============\n\n");
 
@@ -68,6 +70,8 @@ class WordSearch {
 
             Console.WriteLine();
         }
+
+        this.PrintWords();
     }
 
     public void PrintWords() {
@@ -76,7 +80,7 @@ class WordSearch {
         Prints all words to be found
         */
 
-        Console.WriteLine("\n"); 
+        Console.WriteLine(); 
 
         // Getting not found words texts
         List<string> foundWordsText = new();
@@ -87,25 +91,61 @@ class WordSearch {
                 foundWordsText.Add(word.GetText());
             else
                 notFoundWordsText.Add(word.GetText());
-
                 
         foundWordsText.Sort();
         notFoundWordsText.Sort();
 
         // Printing
 
+        // Found
         if (foundWordsText.Count() > 0) {
             Console.WriteLine("Found:");
             foreach (string wordText in foundWordsText)
                 Console.WriteLine("\t" + wordText);
-            Console.WriteLine("\n");
         }
 
+        // Separator
+        if (foundWordsText.Count() > 0 && notFoundWordsText.Count() > 0) {
+            Console.WriteLine();
+        }
+
+        // Not found
         if (notFoundWordsText.Count() > 0) {
             Console.WriteLine("To be found:");
             foreach (string wordText in notFoundWordsText)
                 Console.WriteLine("\t" + wordText);
         }
+
+        Console.WriteLine();
+    }
+
+    public Word? GetWordAt(Coord coord) {
+        return this.GetTable()[coord.x, coord.y].word;
+    }
+
+    public void GuessWordPosition(Coord coord0, Coord coord1) {
+
+        Word? word = this.GetWordAt(coord0);
+
+        if (word == null)
+            return;
+ 
+        // Ordem direta
+        if (word.GetLetters().First().coord == coord0 && word.GetLetters().Last().coord == coord1)
+            word.markAsFound();
+
+        // Ordem inversa
+        if (word.GetLetters().Last().coord == coord0 && word.GetLetters().First().coord == coord1)
+            word.markAsFound();
+    }
+
+    public bool CheckWin() {
+
+        foreach (Word word in this.words)
+            if (!word.GetFound())
+                return false;
+            
+        return true;
     }
 
     // Getters
@@ -120,28 +160,6 @@ class WordSearch {
             words[i] = this.words[i];
         
         return words;
-    }
-
-    public Word? GetWordAt(Coord coord) {
-        return this.GetTable()[coord.x, coord.y].word;
-    }
-
-    public bool Guess(Coord coord0, Coord coord1) {
-
-        Word? word = this.GetWordAt(coord0);
-
-        if (word == null)
-            return false;
- 
-        // Ordem direta
-        if (word.GetLetters().First().coord == coord0 && word.GetLetters().Last().coord == coord1)
-            return true;
-
-        // Ordem inversa
-        if (word.GetLetters().Last().coord == coord0 && word.GetLetters().First().coord == coord1)
-            return true;
-
-        return false;
     }
 
     // Private methods

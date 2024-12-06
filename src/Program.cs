@@ -1,96 +1,7 @@
 ﻿
 using System;
-using System.IO;
 
-public static class Constants {
-
-    public static int maxTriesAmount = 10;
-    public static string VocabularyPath = Path.Combine(AppContext.BaseDirectory, "../../../data/vocabulary.txt");
-    public static string[] vocabulary = Constants.LoadVocabulary();
-    public static string failMessage  = "Too many words for given dimensions. Reduce the number of words, or increase the word search dimensions.";
-
-    private static string[] LoadVocabulary() {
-
-        /*
-        Reads vocabulary from file
-        */
-
-        string[] vocabulary = File.ReadAllText(Constants.VocabularyPath).Split("\n");
-
-        if (vocabulary.Length == 0)
-                throw new IOException("No words found in the vocabulary data file.");
-
-        return vocabulary;
-    } 
-}
-
-public static class Input {
-
-    public static int GetIntInput(string message) {
-
-        /*
-        Asks for the same int input multiple times, until its valid
-        */
-
-        bool valid;
-        int validatedInput;
-            
-        do
-        {
-            Console.Write(message);
-            string rawInput = Console.ReadLine() ?? "";
-            valid = int.TryParse(rawInput, out validatedInput);
-
-        } while (!valid);
-
-        return validatedInput;
-    }
-
-    public static Coord GetCoordInput(string message) {
-
-        /*
-        Asks for the same Coord input multiple times, until its valid
-        */
-
-        bool valid;
-        int x, y;
-            
-        do
-        {
-            Console.Write(message);
-            string[] rawInput = (Console.ReadLine() ?? "").Split(" ");
-
-            bool validX = int.TryParse(rawInput[0], out x);
-            bool validY = int.TryParse(rawInput[1], out y);
-            valid = validX && validY; 
-
-        } while (!valid);
-
-        return new Coord(x, y);
-    }
-}
-
-public static class Util
-{
-    private static Random random = new Random();
-    public static int GetRandom(int max)
-    {
-        return Util.random.Next(max);
-    }
-
-    public static int GetRandom(int min, int max)
-    {
-        return Util.random.Next(min, max);
-    }
-
-    public static char GetRandomCharacter(bool overwrite=false) {
-        
-        if (overwrite)
-            return '.';
-        else 
-            return (char) Util.GetRandom('A', 'Z'+1);
-    }
-}
+public record Coord(int x, int y);
 
 class Program 
 {
@@ -104,24 +15,27 @@ class Program
         WordSearch? wordSearch = TryGenWordSearch(dimensions, wordsAmount);
 
         if (wordSearch == null) {
-
             Console.WriteLine(Constants.failMessage);
             return;
         }
 
-        while (true) {
+        wordSearch.PrintTable();
 
-            wordSearch.PrintTable();
-            wordSearch.PrintWords();
+        while (!wordSearch.CheckWin()) {
 
-            Console.WriteLine("\n");
+            Console.WriteLine("=> Try to mark a word: ");
 
             Coord begin = Input.GetCoordInput("Insert begin: ");
             Coord end = Input.GetCoordInput("Insert end: ");
             
-            if (wordSearch.Guess(begin, end))
-                wordSearch.GetWordAt(begin)!.markAsFound();
+            wordSearch.GuessWordPosition(begin, end);
+
+            wordSearch.PrintTable();
         }
+
+        Console.WriteLine("================");
+        Console.WriteLine("Congratulations!");
+        Console.WriteLine("================\n\n");
     }
 
     private static WordSearch? TryGenWordSearch(Coord dimensions, int wordsAmount) {

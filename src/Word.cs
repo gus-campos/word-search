@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public record Coord(int x, int y);
+
 
 struct Letter {
 
@@ -55,8 +55,18 @@ class Word {
     private bool found = false;
 
     // Static
-    private static Orientation[] orientations = [Orientation.DIAGONAL, Orientation.VERTICAL, Orientation.HORIZONTAL];
-    private static Direction[] directions = [Direction.NORMAL, Direction.REVERSE];
+    private static Orientation[] orientations = [
+
+        Orientation.DIAGONAL, 
+        Orientation.VERTICAL, 
+        Orientation.HORIZONTAL
+    ];
+    
+    private static Direction[] directions = [
+        
+        Direction.NORMAL, 
+        Direction.REVERSE
+    ];
 
     // Constructor
 
@@ -95,6 +105,15 @@ class Word {
         return this.text;
     }
 
+    public bool GetFound() {
+        return this.found;
+    }
+
+    public void markAsFound() {
+        this.found = true;
+    }
+
+
     // Public methods - static
 
     public static Orientation GenRandomOrientation() {
@@ -120,14 +139,6 @@ class Word {
         string wordText = Word.GetRandomWordText();
 
         return new Word(orientation, direction, wordText, dimensions);
-    }
-
-    public void markAsFound() {
-        this.found = true;
-    }
-
-    public bool GetFound() {
-        return this.found;
     }
 
     // Private methods
@@ -202,8 +213,10 @@ class Word {
         and the greatest coord the word can start
         */
 
-        return new Coord(Util.GetRandom(dimensions.x - wordMaxOffset.x),
-                         Util.GetRandom(dimensions.y - wordMaxOffset.y));
+        int x = Util.GetRandom(dimensions.x - wordMaxOffset.x);
+        int y = Util.GetRandom(dimensions.y - wordMaxOffset.y);
+
+        return new Coord(x, y);
     }
 
     private void CreateLetters(Coord dimensions) {
