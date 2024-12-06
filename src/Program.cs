@@ -51,7 +51,12 @@ public static class Util
     private static Random random = new Random();
     public static int GetRandom(int max)
     {
-        return random.Next(max);
+        return Util.random.Next(max);
+    }
+
+    public static int GetRandom(int min, int max)
+    {
+        return Util.random.Next(min, max);
     }
 }
 

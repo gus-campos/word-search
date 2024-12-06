@@ -29,7 +29,7 @@ public class WordSearchTests {
     {
         Coord dimensions = new(40,40);
         WordSearch wordSearch = new WordSearch(dimensions, 10);
-        char[,] table = wordSearch.GetTable();
+        Letter[,] table = wordSearch.GetTable();
 
         Assert.Equal(dimensions, new Coord(table.GetLength(0), table.GetLength(1)));
     }
@@ -39,7 +39,7 @@ public class WordSearchTests {
     {
         WordSearch wordSearch = new WordSearch(new Coord(40,40), 10);
         Word[] words = wordSearch.GetWords();
-        char[,] table = wordSearch.GetTable();
+        Letter[,] table = wordSearch.GetTable();
 
         bool valid = true;
 
@@ -47,9 +47,9 @@ public class WordSearchTests {
         {
             foreach (Letter letter in word.GetLetters())
             {
-                Coord position = letter.GetPosition();
+                Coord position = letter.coord;
 
-                if (table[position.x, position.y] != letter.GetCharacter())
+                if (table[position.x, position.y].character != letter.character)
                 {
                     valid = false;
                     break;

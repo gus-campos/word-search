@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 public record Coord(int x, int y);
@@ -16,15 +15,17 @@ struct Letter {
 
     public char character { get; }
     public Coord coord { get; }
+    public Word? word { get; }
 
     // Constructor
 
     // TODO: Letter passará a guardar word e wordsearch será uma matriz de letters
 
-    public Letter(char character, Coord coord) {
+    public Letter(char character, Coord coord, Word? word=null) {
 
         this.character = character;
         this.coord = coord;
+        this.word = word;
     }
 }
 
@@ -194,7 +195,8 @@ class Word {
                 
                 character: formatedText[i], 
                 coord: new Coord(startPosition.x + i*nextLetterOffset.x, 
-                                    startPosition.y + i*nextLetterOffset.y)                                        
+                                 startPosition.y + i*nextLetterOffset.y),
+                word: this                                      
             );
 
             this.letters.Add(letter);

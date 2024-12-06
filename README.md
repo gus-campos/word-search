@@ -29,12 +29,11 @@ classDiagram
 
 Word "1" *-- Direction
 Word "1" *-- Orientation
-Word "n "*-- Letter
+Word "n"*-- Letter
+Letter "1"*-- Word
 
 WordSearch "n" *-- Word
 WordSearch "1" *-- Coord
-
-Letter "1" *-- Coord
 
 class Coord {
 	<<typedef>>
@@ -49,8 +48,6 @@ class Orientation {
 	INVERSE
 }
 
-  
-
 class Direction {
 
 	<<Enumeration>>
@@ -59,23 +56,24 @@ class Direction {
 	DIAGONAL
 }
 
-struct Letter {
+class Letter {
 
 	-char character
 	-Coord position
-	
-	+char GetCharacter()
-	+Coord GetPosition()
 }
 
 class Word{
-
-	-string[] vocabulary$
+    
 	-List~Letter~ lettters
 	-Direction direction
 	-Orientation orientation
-	-Coord startPosition
 	-string text
+
+    -GetRandomWordText()
+    -GetWordMaxOffset()
+    -GetNextLetterOffset()
+    -GenStartPosition()
+    -CreateLetters()
 	
 	+bool CollidesWith(Word word)
 	+List~Letter~ GetLetters()

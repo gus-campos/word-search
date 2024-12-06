@@ -15,21 +15,18 @@ class WordSearch {
 
     private Coord dimensions;
     private List<Word> words = new List<Word>();
-    private char[,] table;
+    private Letter[,] table;
 
     // Constructor 
     
     public WordSearch(Coord dimensions, int wordsAmount) {
 
-        this.table = new char[dimensions.x, dimensions.y];
+        this.table = new Letter[dimensions.x, dimensions.y];
         this.dimensions = dimensions;
-
-        // Filling table with random letters
-        Random random = new Random();
 
         for (int i=0; i<dimensions.x; i++)
             for (int j=0; j<dimensions.y; j++)
-                this.table[i,j] = (char)random.Next('A', 'Z'+1);   
+                this.table[i,j] = new Letter((char)Util.GetRandom('A', 'Z'+1), new Coord(i,j));  
 
         Orientation[] orientations = [Orientation.DIAGONAL, 
                                       Orientation.VERTICAL, 
@@ -52,8 +49,8 @@ class WordSearch {
                 if (tries > Constants.maxTriesAmount)
                     throw new WordSearchGenerationException("WordSearch too hard to create");
 
-                Orientation orientation = orientations[random.Next(orientations.Length)];
-                Direction direction = directions[random.Next(directions.Length)];
+                Orientation orientation = orientations[Util.GetRandom(orientations.Length)];
+                Direction direction = directions[Util.GetRandom(directions.Length)];
                 Word word = new Word(orientation, direction, this.dimensions);
 
                 valid = !this.ValidWord(word);
@@ -70,7 +67,7 @@ class WordSearch {
 
     // Public methods
 
-    public char[,] GetTable() {
+    public Letter[,] GetTable() {
 
         return this.table;
     }
@@ -85,7 +82,7 @@ class WordSearch {
         {
             for (int j=0; j<dimensions.y; j++)
             {
-                Console.Write(this.table[i,j] + " ");
+                Console.Write(this.table[i,j].character + " ");
             }
 
             Console.WriteLine();
@@ -138,7 +135,7 @@ class WordSearch {
         List<Letter> letters = word.GetLetters();
 
         foreach (Letter letter in letters)
-            this.table[letter.coord.x, letter.coord.y] = letter.character;
+            this.table[letter.coord.x, letter.coord.y] = letter;
     }
 
     private bool ValidWord(Word word) {
