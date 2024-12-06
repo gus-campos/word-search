@@ -19,6 +19,8 @@ struct Letter {
 
     // Constructor
 
+    // TODO: Letter passará a guardar word e wordsearch será uma matriz de letters
+
     public Letter(char character, Coord coord) {
 
         this.character = character;
@@ -43,24 +45,17 @@ class Word {
     Represents a WordSearch table word
     */
 
-    // Static properties
-
-    private static string[]? vocabulary = null;
-    
     // Properties
 
     private List<Letter> letters = new List<Letter>();
     private Direction direction;
     private Orientation orientation;
-    private string text;    
+    private string text = "";    
 
 
     // Constructor
 
     public Word(Orientation orientation, Direction direction, Coord dimensions) {
-
-        if (vocabulary == null) 
-            Word.vocabulary = this.LoadVocabulary();
 
         this.orientation = orientation;
         this.direction = direction;
@@ -77,9 +72,9 @@ class Word {
         Verifies if the two words have any letter coord in commom
         */
 
-        foreach (Letter letter1 in this.letters)
-            foreach (Letter letter2 in word.letters)
-                if (letter1.coord == letter2.coord)
+        foreach (Letter letter0 in this.letters)
+            foreach (Letter letter1 in word.letters)
+                if (letter0.coord == letter1.coord)
                     return true;
 
         return false;
@@ -97,27 +92,13 @@ class Word {
 
     // Private methods
 
-    private string[] LoadVocabulary() {
-
-        /*
-        Reads vocabulary from file
-        */
-
-        string[] vocabulary = File.ReadAllText(Constants.VocabularyPath).Split("\n");
-
-        if (vocabulary.Length == 0)
-                throw new IOException("No words found in the vocabulary data file.");
-
-        return vocabulary;
-    }
-
     private string GetRandomWordText() {
 
         /*
         Get a random word text from vocabulary
         */
 
-        return Word.vocabulary![Util.GetRandom(Word.vocabulary.Length)].ToUpper();
+        return Constants.vocabulary![Util.GetRandom(Constants.vocabulary.Length)].ToUpper();
     }
 
     private Coord GetWordMaxOffset() {
@@ -192,6 +173,10 @@ class Word {
         considering it's direction, orientation and word search
         dimensions limitations
         */
+
+        // TODO: Usar exception mais própria
+        if (this.text == "")
+            throw new NullReferenceException("Word text not defined yet");
 
         Coord wordMaxOffset = this.GetWordMaxOffset();
         Coord nextLetterOffset = this.GetNextLetterOffset();

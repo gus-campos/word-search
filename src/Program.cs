@@ -6,6 +6,21 @@ public static class Constants {
 
     public static int maxTriesAmount = 10;
     public static string VocabularyPath = Path.Combine(AppContext.BaseDirectory, "../../../data/vocabulary.txt");
+    public static string[] vocabulary = Constants.LoadVocabulary();
+
+    private static string[] LoadVocabulary() {
+
+        /*
+        Reads vocabulary from file
+        */
+
+        string[] vocabulary = File.ReadAllText(Constants.VocabularyPath).Split("\n");
+
+        if (vocabulary.Length == 0)
+                throw new IOException("No words found in the vocabulary data file.");
+
+        return vocabulary;
+    } 
 }
 
 public static class Input {

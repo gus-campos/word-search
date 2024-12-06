@@ -68,40 +68,6 @@ class WordSearch {
         }   
     }
 
-    // Private methods
-
-    private void InsertWord(Word word) {
-
-        /* Inserts each letter of the word in the table */
-
-        List<Letter> letters = word.GetLetters();
-
-        foreach (Letter letter in letters)
-            this.table[letter.coord.x, letter.coord.y] = letter.character;
-    }
-
-    private bool ValidWord(Word word) {
-
-        /* 
-        Verifies if a word is valid to be added to the WordSearch
-        It will be valid if:
-
-            * It doesn't collides with any word already inserted
-            * It doesnt't have the same word text as any word already inserted 
-        */
-
-        foreach (Word tableWord in this.words)
-        {
-            if (tableWord.GetText() == word.GetText())
-                return true; 
-
-            if (tableWord.CollidesWith(word))
-                return true;
-        }
-
-        return false;
-    }
-
     // Public methods
 
     public char[,] GetTable() {
@@ -137,7 +103,7 @@ class WordSearch {
             Console.WriteLine(wordText);
     }
 
-    // Public methods - Getters
+    // Getters
 
     public Word[] GetWords() {
 
@@ -163,5 +129,37 @@ class WordSearch {
         return wordsText;
     }
 
-    
+    // Private methods
+
+    private void InsertWord(Word word) {
+
+        /* Inserts each letter of the word in the table */
+
+        List<Letter> letters = word.GetLetters();
+
+        foreach (Letter letter in letters)
+            this.table[letter.coord.x, letter.coord.y] = letter.character;
+    }
+
+    private bool ValidWord(Word word) {
+
+        /* 
+        Verifies if a word is valid to be added to the WordSearch
+        It will be valid if:
+
+            * It doesn't collides with any word already inserted
+            * It doesnt't have the same word text as any word already inserted 
+        */
+
+        foreach (Word tableWord in this.words)
+        {
+            if (tableWord.GetText() == word.GetText())
+                return true; 
+
+            if (tableWord.CollidesWith(word))
+                return true;
+        }
+
+        return false;
+    }
 }
