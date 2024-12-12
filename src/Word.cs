@@ -3,9 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
-
-struct Letter {
+class Letter {
 
     /*
     Represents a WordSearch table letter
@@ -26,6 +24,12 @@ struct Letter {
         this.character = character;
         this.coord = coord;
         this.word = word;
+    }
+
+    public void Print() {
+
+        bool found = this.word != null && this.word.GetFound();
+        Console.Write(found ? "*  " : this.character + "  ");
     }
 }
 
@@ -149,7 +153,8 @@ class Word {
         Get a random word text from vocabulary
         */
 
-        return Constants.vocabulary![Util.GetRandom(Constants.vocabulary.Length)].ToUpper();
+        int randomIndex = Util.GetRandom(Constants.vocabulary.Length);
+        return Constants.vocabulary![randomIndex].ToUpper();
     }
 
     private Coord GetWordMaxOffset() {

@@ -19,23 +19,7 @@ class Program
             return;
         }
 
-        wordSearch.PrintTable();
-
-        while (!wordSearch.CheckWin()) {
-
-            Console.WriteLine("=> Try to mark a word: ");
-
-            Coord begin = Input.GetCoordInput("Insert begin: ");
-            Coord end = Input.GetCoordInput("Insert end: ");
-            
-            wordSearch.GuessWordPosition(begin, end);
-
-            wordSearch.PrintTable();
-        }
-
-        Console.WriteLine("================");
-        Console.WriteLine("Congratulations!");
-        Console.WriteLine("================\n\n");
+        PlayWordSearch(wordSearch);
     }
 
     private static WordSearch? TryGenWordSearch(Coord dimensions, int wordsAmount) {
@@ -60,5 +44,26 @@ class Program
         }
 
         return wordSearch!;
+    }
+
+    private static void PlayWordSearch(WordSearch wordSearch) {
+
+        wordSearch.PrintTable();
+
+        while (!wordSearch.CheckWin()) {
+
+            Console.WriteLine("=> Try to mark a word: ");
+
+            Coord begin = Input.GetCoordInput("Insert begin: ");
+            Coord end = Input.GetCoordInput("Insert end: ");
+            
+            wordSearch.GuessWordPosition(begin, end);
+
+            wordSearch.PrintTable();
+        }
+
+        Console.WriteLine("================");
+        Console.WriteLine("Congratulations!");
+        Console.WriteLine("================\n\n");
     }
 }
