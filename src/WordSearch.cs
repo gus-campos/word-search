@@ -31,7 +31,7 @@ class WordSearch {
 
         // Creating and inserting words
         for (int i=0; i<wordsAmount; i++)
-            this.GenWord();
+            this.InsertRandomWord();
     }
 
     // Public methods
@@ -47,28 +47,34 @@ class WordSearch {
         Prints the word search table, character per character 
         */
 
+        void PrintColumnsIndexes(int n) {
+
+            Console.Write("   ");
+            
+            for (int j=0; j<n; j++)
+                Console.Write($"{j:D2} ");
+            
+            Console.WriteLine("\n");
+        }
+
+        void PrintRowIndex(int i) {
+            Console.Write($"{i:D2}  ");
+        }
+
         Console.WriteLine("\n\n============= Word Search =============\n\n");
 
         // Imprimir índices das colunas
-        Console.Write("   ");
-        for (int j=0; j<dimensions.x; j++)
-            Console.Write($"{j:D2} ");
-        Console.WriteLine("\n");
+        PrintColumnsIndexes(dimensions.x);
 
         for (int i=0; i<dimensions.x; i++)
         {
-            // Imprimir índices das linhas
-            Console.Write($"{i:D2}  ");
+            PrintRowIndex(i);
 
+            // Print letters
             for (int j=0; j<dimensions.y; j++)
-            {
-                Letter letter = this.table[i,j];
-                bool found = letter.word != null && letter.word.GetFound();
-                
-                Console.Write(found ? "*  " : letter.character + "  ");
-            }
+                this.table[i,j].Print();
 
-            Console.WriteLine();
+            Console.WriteLine("");
         }
 
         this.PrintWords();
@@ -198,7 +204,7 @@ class WordSearch {
         return true;
     }
 
-    private void GenWord() {
+    private void InsertRandomWord() {
 
         bool valid;
         int tries = 0;
