@@ -104,29 +104,4 @@ class WordSearch {
 	+void PrintTable()
 	+string[] GetWordsText()
 }
-
-```
-## Diagrama de Atividade
-
-O gráfico da relação entre os objetos pode ser visto no diagrama de atividades abaixo:
-
-```mermaid
-sequenceDiagram
-
-participant WordSearch
-participant Word
-participant Letter
-
-WordSearch ->> Word: Create a Word
-activate Word
-	
-	Word ->> Letter: Create Word's Letters
-	
-	activate Letter
-		Letter ->> Word: Return Letters
-	deactivate Letter
-	
-	Word ->> WordSearch: Return Word
-
-deactivate Word
 ```
