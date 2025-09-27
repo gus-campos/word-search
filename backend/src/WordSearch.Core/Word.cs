@@ -1,0 +1,264 @@
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public record Coord(int x, int y);
+
+public class Letter
+{
+
+    /*
+    Represents a WordSearch table letter
+    */
+
+    // Properties
+
+    public char character { get; }
+    public Coord coord { get; }
+    public Word? word { get; }
+
+    // Constructor
+    
+    public Letter(char character, Coord coord, Word? word = null)
+    {
+
+        this.character = character;
+        this.coord = coord;
+        this.word = word;
+    }
+
+    public void Print()
+    {
+
+        bool found = this.word != null && this.word.GetFound();
+        Console.Write(found ? "*  " : this.character + "  ");
+    }
+}
+
+public enum Direction {
+    NORMAL,
+    REVERSE
+}
+
+public enum Orientation {
+    HORIZONTAL,
+    VERTICAL,
+    DIAGONAL
+}
+
+public class Word {
+
+    /*
+    Represents a WordSearch table word
+    */
+
+    // Properties
+
+    public string Text { get; set; } = "";
+    
+    private List<Letter> letters = new List<Letter>();
+    private Direction direction;
+    private Orientation orientation;
+    private bool found = false;
+
+    // Static
+    private static Orientation[] orientations = [
+
+        Orientation.DIAGONAL, 
+        Orientation.VERTICAL, 
+        Orientation.HORIZONTAL
+    ];
+    
+    private static Direction[] directions = [
+        
+        Direction.NORMAL, 
+        Direction.REVERSE
+    ];
+
+    // Constructor
+
+    public Word(Orientation orientation, Direction direction, string wordText, Coord dimensions) {
+
+        this.orientation = orientation;
+        this.direction = direction;
+        this.Text = wordText;
+
+        this.CreateLetters(dimensions);
+    }
+
+    // Public methods
+
+    public bool CollidesWith(Word word) 
+    {
+        /* 
+        Verifies if the two words have any letter coord in commom
+        */
+
+        foreach (Letter letter0 in this.letters)
+            foreach (Letter letter1 in word.letters)
+                if (letter0.coord == letter1.coord)
+                    return true;
+
+        return false;
+    }
+
+    // Public methods - Getters
+
+    public List<Letter> GetLetters() {
+        return this.letters;
+    }
+
+    public string GetText() {
+        return this.Text;
+    }
+
+    public bool GetFound() {
+        return this.found;
+    }
+
+    public void markAsFound() {
+        this.found = true;
+    }
+
+
+    // Public methods - static
+
+    public static Orientation GenRandomOrientation() {
+        
+        int randomIndex = Util.GetRandom(Word.orientations.Length);
+        return Word.orientations[randomIndex];
+    }
+
+    public static Direction GenRandomDirection() {
+        
+        int randomIndex = Util.GetRandom(Word.directions.Length);
+        return Word.directions[randomIndex];
+    }
+
+    public static Word GenRandomWord(Coord dimensions) {
+
+        /*
+        Creates a random word for given dimensions of a word search
+        */
+
+        Orientation orientation = Word.GenRandomOrientation();
+        Direction direction = Word.GenRandomDirection();
+        string wordText = Word.GetRandomWordText();
+
+        return new Word(orientation, direction, wordText, dimensions);
+    }
+
+    // Private methods
+
+    private static string GetRandomWordText() {
+
+        /*
+        Get a random word text from vocabulary
+        */
+
+        int randomIndex = Util.GetRandom(Constants.Vocabulary.Length);
+        return Constants.Vocabulary![randomIndex].ToUpper();
+    }
+
+    private Coord GetWordSquareDimension() {
+
+        /*
+        Get the dimension of the square ocupied by the word.
+        */
+
+        Coord wordMaxOffset = new(0,0);
+
+        switch (this.orientation) {
+
+            case Orientation.HORIZONTAL:
+                wordMaxOffset = new Coord(0, Text.Length); 
+                break;
+
+            case Orientation.VERTICAL:
+                wordMaxOffset = new Coord(Text.Length, 0);
+                break;
+
+            case Orientation.DIAGONAL:
+                wordMaxOffset = new Coord(Text.Length, Text.Length);
+                break;
+        }
+
+        return wordMaxOffset;
+    }
+
+    private Coord GetNextLetterOffset() {
+
+        /*
+        Returns the displacement from a letter to the other in the table
+        given it's orientation
+        */
+
+        Coord nextLetterOffset = new(0,0);
+
+        switch (this.orientation) {
+
+            case Orientation.HORIZONTAL:
+                nextLetterOffset = new Coord(0, 1);
+                break;
+
+            case Orientation.VERTICAL:
+                nextLetterOffset = new Coord(1, 0);
+                break;
+
+            case Orientation.DIAGONAL:
+                nextLetterOffset = new Coord(1, 1);
+                break;
+        }
+
+        return nextLetterOffset;
+    }
+
+    private Coord GenStartPosition(Coord dimensions, Coord wordSquareDimension) {
+
+        /* 
+        Generates a random start coord given the word search dimensions
+        and the greatest coord the word can start
+        */
+
+        int x = Util.GetRandom(dimensions.x - wordSquareDimension.x);
+        int y = Util.GetRandom(dimensions.y - wordSquareDimension.y);
+
+        return new Coord(x, y);
+    }
+
+    private void CreateLetters(Coord dimensions) {
+
+        /*
+        Create each letter of the word with their coord,
+        considering it's direction, orientation and word search
+        dimensions limitations
+        */
+
+        if (this.Text == "")
+            throw new NullReferenceException("Word text not defined yet");
+
+        Coord wordSquareDimension = this.GetWordSquareDimension();
+        Coord nextLetterOffset = this.GetNextLetterOffset();
+        Coord startPosition = this.GenStartPosition(dimensions, wordSquareDimension);        
+
+        // Reversing word text, if necessary
+        string formatedText = this.Text;
+        if (this.direction == Direction.REVERSE)
+            formatedText = new string(this.Text.Reverse().ToArray());
+    
+        // Creating each letter of the word
+        for (int i=0; i<this.Text.Length; i++)
+        {
+            Letter letter = new Letter(
+                
+                character: formatedText[i], 
+                coord: new Coord(startPosition.x + i*nextLetterOffset.x, 
+                                 startPosition.y + i*nextLetterOffset.y),
+                word: this                                      
+            );
+
+            this.letters.Add(letter);
+        }
+    }
+}
