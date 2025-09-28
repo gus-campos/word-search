@@ -14,25 +14,25 @@ public class Letter
 
     // Properties
 
-    public char character { get; }
-    public Coord coord { get; }
-    public Word? word { get; }
+    public char Character { get; }
+    public Coord Coord { get; }
+    public Word? Word { get; }
 
     // Constructor
     
     public Letter(char character, Coord coord, Word? word = null)
     {
 
-        this.character = character;
-        this.coord = coord;
-        this.word = word;
+        Character = character;
+        Coord = coord;
+        Word = word;
     }
 
     public void Print()
     {
 
-        bool found = this.word != null && this.word.GetFound();
-        Console.Write(found ? "*  " : this.character + "  ");
+        bool found = Word != null && Word.GetFound();
+        Console.Write(found ? "*  " : Character + "  ");
     }
 }
 
@@ -57,9 +57,9 @@ public class Word {
 
     public string Text { get; set; } = "";
     
-    private List<Letter> letters = new List<Letter>();
-    private Direction direction;
-    private Orientation orientation;
+    private readonly List<Letter> letters = new List<Letter>();
+    private readonly Direction direction;
+    private readonly Orientation orientation;
     private bool found = false;
 
     // Static
@@ -82,9 +82,9 @@ public class Word {
 
         this.orientation = orientation;
         this.direction = direction;
-        this.Text = wordText;
+        Text = wordText;
 
-        this.CreateLetters(dimensions);
+        CreateLetters(dimensions);
     }
 
     // Public methods
@@ -95,9 +95,9 @@ public class Word {
         Verifies if the two words have any letter coord in commom
         */
 
-        foreach (Letter letter0 in this.letters)
-            foreach (Letter letter1 in word.letters)
-                if (letter0.coord == letter1.coord)
+        foreach (Letter letter0 in letters)
+            foreach (Letter letter1 in letters)
+                if (letter0.Coord == letter1.Coord)
                     return true;
 
         return false;
@@ -106,19 +106,19 @@ public class Word {
     // Public methods - Getters
 
     public List<Letter> GetLetters() {
-        return this.letters;
+        return letters;
     }
 
     public string GetText() {
-        return this.Text;
+        return Text;
     }
 
     public bool GetFound() {
-        return this.found;
+        return found;
     }
 
     public void markAsFound() {
-        this.found = true;
+        found = true;
     }
 
 
@@ -126,32 +126,31 @@ public class Word {
 
     public static Orientation GenRandomOrientation() {
         
-        int randomIndex = Util.GetRandom(Word.orientations.Length);
-        return Word.orientations[randomIndex];
+        int randomIndex = Util.GetRandom(orientations.Length);
+        return orientations[randomIndex];
     }
 
     public static Direction GenRandomDirection() {
         
-        int randomIndex = Util.GetRandom(Word.directions.Length);
-        return Word.directions[randomIndex];
+        int randomIndex = Util.GetRandom(directions.Length);
+        return directions[randomIndex];
     }
 
-    public static Word GenRandomWord(Coord dimensions) {
+    public static Word GenRandomPositionedWord(Coord dimensions, string wordText) {
 
         /*
         Creates a random word for given dimensions of a word search
         */
 
-        Orientation orientation = Word.GenRandomOrientation();
-        Direction direction = Word.GenRandomDirection();
-        string wordText = Word.GetRandomWordText();
+        Orientation orientation = GenRandomOrientation();
+        Direction direction = GenRandomDirection();
 
         return new Word(orientation, direction, wordText, dimensions);
     }
 
     // Private methods
 
-    private static string GetRandomWordText() {
+    public static string GetRandomWordText() {
 
         /*
         Get a random word text from vocabulary
@@ -164,12 +163,12 @@ public class Word {
     private Coord GetWordSquareDimension() {
 
         /*
-        Get the dimension of the square ocupied by the word.
+        Get the dimension of the square ocupied by the 
         */
 
         Coord wordMaxOffset = new(0,0);
 
-        switch (this.orientation) {
+        switch (orientation) {
 
             case Orientation.HORIZONTAL:
                 wordMaxOffset = new Coord(0, Text.Length); 
@@ -196,7 +195,7 @@ public class Word {
 
         Coord nextLetterOffset = new(0,0);
 
-        switch (this.orientation) {
+        switch (orientation) {
 
             case Orientation.HORIZONTAL:
                 nextLetterOffset = new Coord(0, 1);
@@ -235,20 +234,20 @@ public class Word {
         dimensions limitations
         */
 
-        if (this.Text == "")
+        if (Text == "")
             throw new NullReferenceException("Word text not defined yet");
 
-        Coord wordSquareDimension = this.GetWordSquareDimension();
-        Coord nextLetterOffset = this.GetNextLetterOffset();
-        Coord startPosition = this.GenStartPosition(dimensions, wordSquareDimension);        
+        Coord wordSquareDimension = GetWordSquareDimension();
+        Coord nextLetterOffset = GetNextLetterOffset();
+        Coord startPosition = GenStartPosition(dimensions, wordSquareDimension);        
 
         // Reversing word text, if necessary
-        string formatedText = this.Text;
-        if (this.direction == Direction.REVERSE)
-            formatedText = new string(this.Text.Reverse().ToArray());
+        string formatedText = Text;
+        if (direction == Direction.REVERSE)
+            formatedText = new string(Text.Reverse().ToArray());
     
         // Creating each letter of the word
-        for (int i=0; i<this.Text.Length; i++)
+        for (int i=0; i<Text.Length; i++)
         {
             Letter letter = new Letter(
                 
@@ -258,7 +257,7 @@ public class Word {
                 word: this                                      
             );
 
-            this.letters.Add(letter);
+            letters.Add(letter);
         }
     }
 }

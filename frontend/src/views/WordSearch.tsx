@@ -76,8 +76,8 @@ const coordToIndex = (coord: Coord, wordSearchParams: WordSearchParams) => {
 };
 
 const initialParams: WordSearchParams = {
-  rows: 20,
-  columns: 30,
+  rows: 40,
+  columns: 40,
   words: 10,
   topic: '',
 };

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 public class WordSearchGenerationException : Exception 
 {
@@ -19,36 +20,59 @@ public class WordSearch {
     public Letter[,] Table { get; set; }
 
     // Constructor 
-    
-    public WordSearch(Coord dimensions, int wordsAmount) {
 
+    public WordSearch(Coord dimensions, List<string> wordsTexts)
+    {
         bool debugMode = true;
 
         if (dimensions.x < Constants.MinDimension || dimensions.y < Constants.MinDimension)
-            throw new System.Exception("Nenhum lado deve ser menor que " + Constants.MinDimension);
+            throw new Exception("Nenhum lado deve ser menor que " + Constants.MinDimension);
 
-        this.Table = new Letter[dimensions.x, dimensions.y];
-        this.Dimensions = dimensions;
+        Table = new Letter[dimensions.x, dimensions.y];
+        Dimensions = dimensions;
 
         for (int i = 0; i < dimensions.x; i++)
         {
             for (int j = 0; j < dimensions.y; j++)
             {
                 char randomChar = Util.GetRandomCharacter();
-                this.Table[i,j] = new Letter(debugMode ? char.ToLower(randomChar) : randomChar, new Coord(i,j));
+                Table[i, j] = new Letter(debugMode ? char.ToLower(randomChar) : randomChar, new Coord(i, j));
             }
         }
 
-        // Creating and inserting words
-        for (int i=0; i<wordsAmount; i++)
-            this.InsertRandomWord();
+        foreach (string wordText in wordsTexts)
+            InsertRandomPositionedWord(wordText);
+
+        Console.WriteLine("CHEGOU");
+        Console.WriteLine("Palavras" + Words.Count);
+    }
+
+    public static async Task<WordSearch> GenWordSearch(Coord dimensions, int wordsAmount, string topic = "")
+    {
+        List<string> wordsTexts;
+
+        if (topic == "")
+        {
+            wordsTexts = [];
+            for (int i = 0; i < wordsAmount; i++)
+                wordsTexts.Add(Word.GetRandomWordText());
+        }
+        else
+        {
+            var genAiWords = new GenAiWords("");
+            string[] wordsTextsArray = await genAiWords.GenerateWordsGemini(topic, wordsAmount);
+            wordsTexts = [..wordsTextsArray];
+        }
+
+        return new WordSearch(dimensions, wordsTexts);
     }
 
     // Public methods
 
-    public Letter[,] GetTable() {
+    public Letter[,] GetTable()
+    {
 
-        return this.Table;
+        return Table;
     }
 
     public void PrintTable() {
@@ -82,12 +106,12 @@ public class WordSearch {
 
             // Print letters
             for (int j=0; j<Dimensions.y; j++)
-                this.Table[i,j].Print();
+                Table[i,j].Print();
 
             Console.WriteLine("");
         }
 
-        this.PrintWords();
+        PrintWords();
     }
 
     public void PrintWords() {
@@ -102,7 +126,7 @@ public class WordSearch {
         List<string> foundWordsText = new();
         List<string> notFoundWordsText = new();
 
-        foreach (Word word in this.Words)
+        foreach (Word word in Words)
             if (word.GetFound())
                 foundWordsText.Add(word.GetText());
             else
@@ -136,28 +160,28 @@ public class WordSearch {
     }
 
     public Word? GetWordAt(Coord coord) {
-        return this.GetTable()[coord.x, coord.y].word;
+        return GetTable()[coord.x, coord.y].Word;
     }
 
     public void GuessWordPosition(Coord coord0, Coord coord1) {
 
-        Word? word = this.GetWordAt(coord0);
+        Word? word = GetWordAt(coord0);
 
         if (word == null)
             return;
  
         // Ordem direta
-        if (word.GetLetters().First().coord == coord0 && word.GetLetters().Last().coord == coord1)
+        if (word.GetLetters().First().Coord == coord0 && word.GetLetters().Last().Coord == coord1)
             word.markAsFound();
 
         // Ordem inversa
-        if (word.GetLetters().Last().coord == coord0 && word.GetLetters().First().coord == coord1)
+        if (word.GetLetters().Last().Coord == coord0 && word.GetLetters().First().Coord == coord1)
             word.markAsFound();
     }
 
     public bool CheckWin() {
 
-        foreach (Word word in this.Words)
+        foreach (Word word in Words)
             if (!word.GetFound())
                 return false;
             
@@ -170,10 +194,10 @@ public class WordSearch {
 
         /* Get the text of each word in the table */
 
-        Word[] words = new Word[this.Words.Count];
+        Word[] words = new Word[Words.Count];
         
         for (int i=0; i<words.Length; i++)
-            words[i] = this.Words[i];
+            words[i] = Words[i];
         
         return words;
     }
@@ -187,9 +211,9 @@ public class WordSearch {
         List<Letter> letters = word.GetLetters();
 
         foreach (Letter letter in letters)
-            this.Table[letter.coord.x, letter.coord.y] = letter;
+            Table[letter.Coord.x, letter.Coord.y] = letter;
 
-        this.Words.Add(word);
+        Words.Add(word);
     }
 
     private bool ValidWordInsert(Word word) {
@@ -202,8 +226,11 @@ public class WordSearch {
             * It doesnt't have the same word text as any word already inserted 
         */
 
-        foreach (Word tableWord in this.Words)
+        foreach (Word tableWord in Words)
         {
+            // Console.WriteLine("1 " + tableWord.coord);
+            // Console.WriteLine("2 " + tableWord.coord);
+
             if (tableWord.GetText() == word.GetText())
                 return false; 
 
@@ -214,7 +241,7 @@ public class WordSearch {
         return true;
     }
 
-    private void InsertRandomWord() {
+    private void InsertRandomPositionedWord(string wordText) {
 
         bool valid;
         int tries = 0;
@@ -225,15 +252,14 @@ public class WordSearch {
             // If too many tries are made, throw an Exception
             tries++;
             if (tries > Constants.MaxTriesAmount)
-                throw new WordSearchGenerationException("WordSearch too hard to create");
+                throw new WordSearchGenerationException("Couldn't insert the word " + wordText);
 
-            // Create word
-            Word word = Word.GenRandomWord(this.Dimensions);
+            Word word = Word.GenRandomPositionedWord(Dimensions, wordText);
 
-            valid = this.ValidWordInsert(word);
+            valid = ValidWordInsert(word);
 
-            if (valid) 
-                this.InsertWord(word);
+            if (valid)
+                InsertWord(word);
 
         } while (!valid);
     }

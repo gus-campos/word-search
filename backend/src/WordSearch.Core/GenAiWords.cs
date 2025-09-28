@@ -88,6 +88,8 @@ public class GenAiWords
 
         var responseString = await response.Content.ReadAsStringAsync();
 
+        Console.WriteLine(responseString);
+
         try
         {
             using var doc = JsonDocument.Parse(responseString);
